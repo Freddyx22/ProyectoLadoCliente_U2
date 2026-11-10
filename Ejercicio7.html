@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Cronometro Ejercicio 7</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #d6d6d6;
+            min-height: 100vh;
+        }
+
+        .cabecera {
+            background: #1750d8;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+            .cabecera h1 {
+                font-size: 1.6rem;
+                letter-spacing: 1px;
+            }
+
+        .cronometro {
+            background: #fff;
+            width: 500px;
+            max-width: 90%;
+            margin: 0 auto;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .pantalla {
+            background: #1750d8;
+            border: 2px solid #c9c9c9;
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            font-family: "Courier New", monospace;
+            font-size: 3.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: whitesmoke;
+        }
+
+        .botones {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 0.85rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+            .btn:active {
+                transform: scale(0.97);
+            }
+
+            .btn:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+        .btn-azul {
+            background: #1750d8;
+            color: #fff;
+        }
+
+
+        .btn-rojo {
+            background: #822;
+            color: #fff;
+        }
+
+
+        .btn-gris {
+            background: #444;
+            color: #fff;
+        }
+
+            .btn-gris:hover:not(:disabled) {
+                background: #222;
+            }
+
+        .aviso {
+            color: #1750d8;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="cabecera">
+        <h1>Ejercicio 6. Cronómetro.</h1>
+    </header>
+
+    <main class="cronometro">
+
+        <div id="pantalla" class="pantalla">00:00:00</div>
+
+
+        <div class="botones">
+            <button id="btnIniciar" class="btn btn-azul">Iniciar</button>
+            <button id="btnParar" class="btn btn-rojo" disabled>Parar</button>
+            <button id="btnReiniciar" class="btn btn-gris">Reiniciar</button>
+        </div>
+
+        <p id="aviso" class="aviso" hidden>Mensaje</p>
+    </main>
+     <script>
+
+const btnIniciar = document.getElementById("btnIniciar");
+const btnParar = document.getElementById("btnParar");
+const btnReiniciar = document.getElementById("btnReiniciar");
+const pantalla = document.getElementById("pantalla");
+const aviso = document.getElementById("aviso");
+
+let horas = 0, minutos = 0, segundos = 0;
+let idIntervalo = null;
+let idAviso = null;
+
+function avisar(texto, duracion = 2000) {
+    clearTimeout(idAviso);
+
+    aviso.textContent = texto;
+    aviso.hidden = false;
+
+    idAviso = setTimeout(() => {
+        aviso.hidden = true;
+    }, duracion);
+}
+
+function actualizarPantalla() {
+    pantalla.textContent =
+        `${horas.toString().padStart(2, '0')}:` +
+        `${minutos.toString().padStart(2, '0')}:` +
+        `${segundos.toString().padStart(2, '0')}`;
+}
+
+btnIniciar.addEventListener("click", () => {
+
+    if (idIntervalo === null) {
+        idIntervalo = setInterval(() => {
+            segundos++;
+
+            if (segundos == 60) {
+                segundos = 0;
+                minutos++;
+            }
+
+            if (minutos == 60) {
+                minutos = 0;
+                horas++;
+            }
+
+            actualizarPantalla();
+        }, 1000);
+
+        btnIniciar.disabled = true;
+        btnParar.disabled = false;
+
+        avisar("Cronómetro iniciado");
+    }
+});
+
+btnParar.addEventListener("click", () => {
+    clearInterval(idIntervalo);
+    idIntervalo = null;
+
+    btnIniciar.disabled = false;
+    btnParar.disabled = true;
+
+    avisar("Cronómetro detenido");
+});
+
+btnReiniciar.addEventListener("click", () => {
+    clearInterval(idIntervalo);
+    idIntervalo = null;
+
+    horas = 0;
+    minutos = 0;
+    segundos = 0;
+
+    actualizarPantalla();
+
+    btnIniciar.disabled = false;
+    btnParar.disabled = true;
+
+    avisar("Cronómetro reiniciado");
+});
+
+     </script>
+</body>
+</html>

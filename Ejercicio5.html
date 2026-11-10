@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: gainsboro;
+            font-family: Arial;
+        }
+
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            background-color: darkblue;
+            font-weight: 300;
+            margin: 0;
+            padding: 10px;
+            color: whitesmoke;
+        }
+
+
+        form {
+            width: 50%;
+            display: grid;
+            margin: 10px auto;
+            grid-template-columns: 4fr 1fr 1fr 3fr;
+            grid-template-rows: repeat(5, auto);
+            gap: 10px;
+        }
+
+
+        label {
+            grid-column: span 4;
+            font-size: 1.5em;
+        }
+
+        input[type=button] {
+            background-color: darkblue;
+            color: whitesmoke;
+            height: 30px;
+        }
+
+        input[type=text] {
+            grid-column: span 3;
+            font-size: 1.5em;
+        }
+
+
+        select {
+            grid-row: span 4;
+            font-size: 1.5em;
+        }
+
+
+
+        #select2 {
+            grid-column: 3 / 5;
+            grid-row: 3 / 7;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejercicio 5. Lista de tareas</h1>
+      <form>
+         <label>Elemento: </label>
+         <input type="text" id="txtTexto" />
+         <input type="button" value="Agregar" id="btnAgregar" />
+         <select size="10" id="select1"></select>
+         <input type="button" id="btnDer" value=">>" />
+         <input type="button" id="btnIzq" value="<<" />
+         <input type="button" id="btnBorrar" value="&#128473;" />
+         <select size="10" id="select2">
+         </select>
+      </form>
+    <script>
+        const txtDato = document.querySelector("#txtTexto");
+        const btnAgregar = document.querySelector("#btnAgregar");
+        const selector = document.querySelector("select");
+        const btnDerecha = document.querySelector("#btnDer");
+        const btnIzquierda = document.querySelector("#btnIzq");
+        const btnBorrar = document.querySelector("#btnBorrar");
+        btnAgregar.addEventListener("click", () => {
+            const texto = txtDato.value().trim();
+            if (texto !== "") {
+                const selected = Array.from(selector[0]);
+                if (selector.sum(x => x.value === texto)) {
+                    const op = document.createElement("option");
+                    op.textContent = texto;
+                    selected[0].append(op);
+                    txtDato.Focus();
+                    textDato.value = "";
+                }
+            }
+        });
+btnDerecha.addEventListener("click", () => {
+    if (selector[0].selectedIndex >= 0) { 
+        selector[0].options[selector[0].selectedIndex()].Remove();
+        selector[1].append(elemento);
+    }
+
+});
+    </script>
+</body>
+</html>

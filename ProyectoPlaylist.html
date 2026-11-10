@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Proyecto 2. Generador de Playlist</title>
+    <style>
+        :root {
+            --oscuro: #13315c;
+            --medio: #3d6a9e;
+            --suave: #c9d8ea;
+            --fondo: #f0f4f9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--fondo);
+            color: var(--oscuro);
+        }
+
+        header {
+            background: var(--oscuro);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+            header h1 {
+                margin: 0 0 5px;
+                font-size: 1.6rem;
+            }
+
+            header p {
+                margin: 0;
+                color: var(--suave);
+            }
+
+        main {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        section {
+            background: white;
+            border: 1px solid var(--suave);
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--suave);
+        }
+
+        h3 {
+            margin: 20px 0 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medio);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--oscuro);
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            background: var(--oscuro);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: var(--medio);
+            }
+
+        form button[type=submit] {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .fila {
+            display: flex;
+            gap: 10px;
+        }
+
+            .fila input {
+                flex: 1;
+            }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--fondo);
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+            li span {
+                flex: 1;
+            }
+
+            li button {
+                padding: 5px 10px;
+            }
+
+        .btn-eliminar {
+            background: #b3261e;
+        }
+
+            .btn-eliminar:hover {
+                background: #8c1d18;
+            }
+
+        footer {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--medio);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Proyecto 2: Generador de Playlist</h1>
+        <p>Programación del lado del cliente</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>Mi Playlist</h2>
+            <form>
+                <label for="nombre">Nombre de la canción</label>
+                <input type="text" id="nombre" name="nombre" />
+                <label for="artista">Artista</label>
+                <input type="text" id="artista" name="artista" />
+                <button type="submit">Agregar a la Playlist</button>
+            </form>
+
+            <form role="search">
+                <label for="buscar">Buscar</label>
+                <div class="fila">
+                    <input type="search" id="buscar" name="buscar" placeholder="Nombre o artista..." />
+                    <button type="button" name="btnMezclar">Mezclar</button>
+                </div>
+            </form>
+
+            <h3>Lista de reproducción</h3>
+            <ul></ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Proyecto 2 · Unidad 2</p>
+    </footer>
+
+    <script type="module">
+                const formCancion = document.forms[0];
+                const formBuscar = document.forms[1];
+                const ulPlaylist = document.querySelectorAll("ul")[0];
+
+                const guardadoPlaylist = localStorage.getItem("playlist");
+                const canciones = guardadoPlaylist ? JSON.parse(guardadoPlaylist) : [];
+
+                const mostrarPlaylist = () => {
+                    const filtro = formBuscar.buscar.value.trim().toLowerCase();
+                    ulPlaylist.innerHTML = "";
+
+                    for (let i = 0; i < canciones.length; i++) {
+                        const c = canciones[i];
+                        const coincide = c.nombre.toLowerCase().includes(filtro) || c.artista.toLowerCase().includes(filtro);
+
+                        if (coincide) {
+                            const li = document.createElement("li");
+                            const texto = document.createElement("span");
+                            const btnSubir = document.createElement("button");
+                            const btnBajar = document.createElement("button");
+                            const btnEliminar = document.createElement("button");
+
+                            texto.textContent = c.nombre + " - " + c.artista;
+                            btnSubir.textContent = "↑";
+                            btnBajar.textContent = "↓";
+                            btnEliminar.textContent = "Eliminar";
+                            btnEliminar.className = "btn-eliminar";
+
+                            btnSubir.addEventListener("click", () => {
+                                if (i > 0) {
+                                    intercambiar(i, i - 1);
+                                }
+                            });
+
+                            btnBajar.addEventListener("click", () => {
+                                if (i < canciones.length - 1) {
+                                    intercambiar(i, i + 1);
+                                }
+                            });
+
+                            btnEliminar.addEventListener("click", () => {
+                                canciones.splice(i, 1);
+                                actualizar();
+                            });
+
+                            li.append(texto, btnSubir, btnBajar, btnEliminar);
+                            ulPlaylist.append(li);
+                        }
+                    }
+                };
+
+                const actualizar = () => {
+                    localStorage.setItem("playlist", JSON.stringify(canciones));
+                    mostrarPlaylist();
+                };
+
+                const intercambiar = (a = 0, b = 0) => {
+                    const temp = canciones[a];
+                    canciones[a] = canciones[b];
+                    canciones[b] = temp;
+                    actualizar();
+                };
+
+                formCancion.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const nombre = formCancion.nombre.value.trim();
+                    const artista = formCancion.artista.value.trim();
+
+                    if (nombre === "" || artista === "") {
+                        alert("Completa el nombre y el artista.");
+                    } else {
+                        canciones.push({ nombre: nombre, artista: artista });
+                        formCancion.reset();
+                        actualizar();
+                    }
+                });
+
+                formBuscar.addEventListener("input", mostrarPlaylist);
+
+                formBuscar.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                });
+
+                formBuscar.btnMezclar.addEventListener("click", () => {
+                    for (let i = canciones.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const temp = canciones[i];
+                        canciones[i] = canciones[j];
+                        canciones[j] = temp;
+                    }
+                    actualizar();
+                });
+
+                mostrarPlaylist();
+    </script>
+</body>
+</html>

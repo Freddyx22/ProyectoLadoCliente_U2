@@ -1,0 +1,149 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Ejercicio 8 Control de gastos</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .contenedor {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        input {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            width: 100%;
+            background: #2e8b57;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+        .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h2>Mis Gastos</h2>
+
+        <input type="text" id="buscarGasto" placeholder="Buscar gasto">
+
+        <input type="text" id="nombreGasto" placeholder="Ej. Comida">
+        <input type="number" id="cantidadGasto" placeholder="Ej. 150">
+
+        <button id="btnAgregar">Añadir Gasto</button>
+
+        <ul id="listaGastos"></ul>
+
+        <p class="total">Total: $<span id="totalGastado">0</span></p>
+    </div>
+
+    <script>
+        const inputNombre = document.getElementById("nombreGasto");
+        const inputCantidad = document.getElementById("cantidadGasto");
+        const btnAgregar = document.getElementById("btnAgregar");
+        const ulListaGastos = document.getElementById("listaGastos");
+        const totalGastado = document.getElementById("totalGastado");
+        const buscarGasto = document.getElementById("buscarGasto");
+
+        const gastos = [];
+
+        const borrarGasto = (indice) => {
+            gastos.splice(indice, 1);
+            dibujarLista();
+        };
+
+        const dibujarLista = () => {
+            ulListaGastos.innerHTML = "";
+
+            const texto = buscarGasto.value.toLowerCase();
+
+            const gastosFiltrados = gastos.filter((g) => {
+                return g.nombre.toLowerCase().includes(texto);
+            });
+
+            gastosFiltrados.forEach((g) => {
+                const indice = gastos.indexOf(g);
+                const li = document.createElement("li");
+
+                li.innerHTML = `<span>${g.nombre} - $${g.cantidad}</span>
+                <button onclick="borrarGasto(${indice})" style="width:auto; background:#c0392b; color:white; border:1px solid black; padding:6px 12px; margin-left:10px;">Borrar</button>`;
+
+                ulListaGastos.append(li);
+            });
+
+            const total = gastos.reduce((acumulado, g) => {
+                return acumulado + g.cantidad;
+            }, 0);
+
+            totalGastado.textContent = total;
+        };
+
+        buscarGasto.addEventListener("input", dibujarLista);
+
+        btnAgregar.addEventListener("click", () => {
+            const nombre = inputNombre.value.trim();
+            const cantidad = Number(inputCantidad.value);
+
+            if (nombre == "" || cantidad <= 0 || inputCantidad.value == "") {
+                alert("Datos inválidos");
+                return;
+            }
+
+            gastos.push({ nombre: nombre, cantidad: cantidad });
+
+            dibujarLista();
+
+            inputCantidad.value = "";
+            inputNombre.value = "";
+            inputNombre.placeholder = "Ej. Comida";
+            inputCantidad.placeholder = "Ej. 100";
+            inputNombre.focus();
+
+            console.log(gastos);
+        });
+    </script>
+</body>
+</html>

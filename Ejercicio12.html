@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Mis Tareas</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        .contenedor {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 8px;
+        }
+
+        input, button {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #1750d8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-detalles {
+            background: #2e8b57;
+            width: auto;
+            margin: 0;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h2>Mis Tareas</h2>
+        <input type="text" id="inputTarea" placeholder="Nueva tarea...">
+        <button id="btnAgregar">Añadir</button>
+
+        <a href="detalle.html" style="display:block; text-align:center; margin-top:20px; color:#1750d8;">Ver Detalles de las Tareas </a>
+
+        <ul id="listaTareas"></ul>
+    </div>
+
+    <script>
+        let tarea = document.getElementById("inputTarea");
+        const btnAgregar = document.getElementById("btnAgregar")
+        const ul = document.getElementById("listTareas");
+
+btnAgregar.addEventListener("click", () => {
+
+});
+    </script>
+</body>
+</html>

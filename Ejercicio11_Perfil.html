@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Mi Perfil</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 50px;
+            text-align: center;
+            transition: background 0.5s;
+        }
+
+
+        .caja {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+
+        button {
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body id="cuerpo">
+    <div class="caja">
+        <h1 id="saludo">Cargando...</h1>
+        <p>¡Qué bueno verte de nuevo!</p>
+        <button id="btnSalir">Cerrar Sesión</button>
+    </div>
+    <script type="module">
+                const cuerpo = document.getElementById("cuerpo");
+                const saludo = document.getElementById("saludo");
+                const btnSalir = document.getElementById("btnSalir");
+
+                const guardado = localStorage.getItem("configuracionUsuario");
+
+if (cuerpo && saludo && btnSalir) {
+            if (guardado) {
+                const config = JSON.parse(guardado);
+                saludo.textContent = `Bienvenido, ${ config.nombreUs }!`;
+                cuerpo.style.background = config.colorUs;
+            } else {
+                window.location.href = "Ejercicio11_Index.html";
+            }
+
+            btnSalir.addEventListener("click", () => {
+                localStorage.removeItem("configuracionUsuario");
+                window.location.href = "Ejercicio11_Index.html";
+            });
+}
+    </script>
+</body>
+</html>

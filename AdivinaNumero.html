@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Ejercicio 3. Adivina número</title>
+    <style>
+        body,
+        html {
+            width: 100%;
+            font-family: Verdana;
+            margin: 0;
+            padding: 20px;
+            background-color: gainsboro;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            background-color: seagreen;
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            margin: 0 0 20px 0;
+            border-radius: 4px;
+            font-size: 1.8rem;
+        }
+
+        .juego {
+            background-color: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            margin: 0 auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .between {
+            color: seagreen;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .numero {
+            background-color: gainsboro;
+            color: seagreen;
+            font-size: 3rem;
+            font-weight: bold;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            margin: 0 auto 20px auto;
+            border: 2px solid #ccc;
+        }
+
+        .controles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .left,
+        .right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .numeroAdivinar {
+            padding: 10px;
+            font-size: 1.2rem;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            font-family: Arial;
+        }
+
+            .numeroAdivinar:focus {
+                border-color: seagreen;
+            }
+
+        .btn-check,
+        .btn-again {
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Arial;
+            transition: background-color 0.2s;
+        }
+
+        .btn-check {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            background-color: seagreen;
+        }
+
+            .btn-check:hover {
+                background-color: #2e8b57;
+            }
+
+        .btn-again {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            background-color: #555;
+        }
+
+            .btn-again:hover {
+                background-color: #333;
+            }
+
+            .btn-check:disabled,
+            .btn-again:disabled,
+            .numeroAdivinar:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .mensaje {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-height: 24px;
+            color: seagreen;
+        }
+
+        .label-score,
+        .label-highscore {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .score,
+        .highscore {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Ejercicio 3. Juego adivinar número.</h1>
+    <div class="juego">
+        <header>
+            <button class="btn-again">Otra vez a jugar!</button>
+            <p class="between">(Un número entre 1 y 20)</p>
+        </header>
+        <div class="numero">?</div>
+        <div class="controles">
+            <div class="left">
+                <input type="number" class="numeroAdivinar" placeholder="Escribe un número..." /><button class="btn-check">
+                    Adivinar
+                </button>
+            </div>
+            <div class="right">
+                <p class="mensaje">Juego iniciado...</p>
+                <p class="label-score">Record: <span class="score">20</span></p>
+                <p class="label-highscore">Máximo record: <span class="highscore">0</span></p>
+            </div>
+        </div>
+    </div>
+    <script>
+                const btnAgain = document.querySelector(".btn-again");
+                const btnCheck = document.querySelector(".btn-check");
+                const inpAdivinar = document.querySelector(".numeroAdivinar");
+                const numeroMostrar = document.querySelector(".numero");
+                const labelScore = document.querySelector(".score");
+                const labelHighscore = document.querySelector(".highscore");
+                const mensaje = document.querySelector(".mensaje");
+
+                let numeroSecreto = 0;
+                let score = 20;
+                let highscore = 0;
+
+                const generarNum = () => {
+                    return Math.floor(Math.random() * 20) + 1;
+                };
+
+                const iniciarJuego = () => {
+                    numeroSecreto = generarNum();
+                    score = 20;
+                    numeroMostrar.textContent = "?";
+                    numeroMostrar.style.backgroundColor = "gainsboro";
+                    numeroMostrar.style.color = "seagreen";
+                    labelScore.textContent = score;
+                    mensaje.textContent = "Juego iniciado...";
+                    inpAdivinar.value = "";
+                    inpAdivinar.disabled = false;
+                    btnCheck.disabled = false;
+                    btnAgain.disabled = true;
+                    inpAdivinar.focus();
+                };
+
+                const terminarJuego = () => {
+                    numeroMostrar.textContent = numeroSecreto;
+                    btnCheck.disabled = true;
+                    inpAdivinar.disabled = true;
+                    btnAgain.disabled = false;
+                };
+
+                const comprobarNumero = () => {
+                    const numero = Number(inpAdivinar.value);
+
+                    if (inpAdivinar.value === "" || numero < 1 || numero > 20) {
+                        mensaje.textContent = "Escribe un número entre 1 y 20";
+                        return;
+                    }
+
+                    if (numero === numeroSecreto) {
+                        mensaje.textContent = "¡Correcto!";
+                        numeroMostrar.style.backgroundColor = "seagreen";
+                        numeroMostrar.style.color = "white";
+                        if (score > highscore) {
+                            highscore = score;
+                            labelHighscore.textContent = highscore;
+                        }
+                        terminarJuego();
+                    } else {
+                        score--;
+                        labelScore.textContent = score;
+                        if (score === 0) {
+                            mensaje.textContent = "¡Perdiste!";
+                            terminarJuego();
+                        } else if (numero > numeroSecreto) {
+                            mensaje.textContent = "Muy alto";
+                        } else {
+                            mensaje.textContent = "Muy bajo";
+                        }
+                    }
+                    inpAdivinar.value = "";
+                };
+
+                btnCheck.addEventListener("click", comprobarNumero);
+                btnAgain.addEventListener("click", iniciarJuego);
+
+                iniciarJuego();
+    </script>
+</body>
+</html>

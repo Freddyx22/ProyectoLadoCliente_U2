@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Iniciar Sesión</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f0f2f5;
+            padding: 50px;
+            text-align: center;
+        }
+
+
+        .caja {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+
+        button {
+            background: #1750d8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="caja">
+        <h2>Configura tu perfil</h2>
+        <input type="text" id="inputNombre" placeholder="¿Cómo te llamas?">
+        <select id="selectColor">
+            <option value="#1750d8">Azul</option>
+            <option value="#2e8b57">Verde</option>
+            <option value="#c7365f">Rosa</option>
+            <option value="#f1c40f">Amarillo</option>
+        </select><button id="btnEntrar">Entrar a mi perfil</button>
+    </div>
+    <script type="module">
+                 const nombre = document.querySelector("input");
+                 const selectorColor = document.querySelector("select");
+                 const btnEntrar = document.querySelector("button");
+
+if (localStorage.getItem("configuracionUsuario")) {
+            window.location.href = "Ejercicio11_Perfil.html";
+}
+
+if (nombre && selectorColor && btnEntrar) {
+            btnEntrar.addEventListener("click", () => {
+                if (nombre.value.trim() === "") {
+                    alert("Ingresa tu nombre.");
+                } else {
+                    const config = {
+                        nombreUs: nombre.value.trim(),
+                        colorUs: selectorColor.value
+                    }
+                    localStorage.setItem("configuracionUsuario", JSON.stringify(config));
+                    window.location.href = "Ejercicio11_Perfil.html";
+                }
+            });
+}
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Ejercicio </title>
+    <style>
+        body {
+            font-family: Verdana;
+            background: #1e1e2f;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
+
+        p {
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 50px;
+        }
+
+        .tablero {
+            display: grid;
+            grid-template-columns: repeat(5, 80px);
+            grid-template-rows: repeat(5, 80px);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .celda {
+            width: 80px;
+            height: 80px;
+            background-color: #444;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+
+
+
+            .celda.encendida {
+                background-color: #f1c40f;
+                box-shadow: 0 0 15px #f1c40f;
+            }
+
+
+        button {
+            padding: 10px 20px;
+            font-size: 25px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lights Out </h1>
+    <p id="mensaje">¡Apaga todas las luces!</p>
+    <div id="tablero" class="tablero">
+    </div>
+    <button id="btnReiniciar">Reiniciar Juego</button>
+    <script>
+        const reiniciar = document.getElementById("btnReiniciar")
+        const tablebro = document.getElementById("tablero");
+        let luces = Array(25).fill(0);
+
+         const reiniciar = () => { 
+             luces = luces.map(() => Math.random() > 0.5 ? 1 : 0);
+             console.log(luces);
+         }
+
+         reiniciar.addEventListener("click",reiniciar);
+
+         reiniciar();
+
+         const div = document.createElemnt("div");
+         div.classList.add("celda");
+         tablero.append(div);
+
+        const div1 = document.createElemnt("div");
+        div.classList.add("celda");
+        tablero.append(div1);
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Ejercicio 3: Juego de craps</title>
+    <style>
+        body,
+        html {
+            width: 100%;
+            font-family: Verdana;
+            margin: 0;
+            padding: 20px;
+            background-color: gainsboro;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            background-color: firebrick;
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            margin: 0 0 20px 0;
+            border-radius: 4px;
+            font-size: 1.8rem;
+        }
+
+        .juego {
+            background-color: white;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+            margin: 0;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .between {
+            color: firebrick;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .dados {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .dado {
+            background-color: gainsboro;
+            color: firebrick;
+            font-size: 4rem;
+            line-height: 1;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            border: 2px solid #ccc;
+        }
+
+        .controles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .left,
+        .right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-lanzar,
+        .btn-nuevo {
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: Arial;
+            transition: background-color 0.2s;
+        }
+
+        .btn-lanzar {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            background-color: firebrick;
+        }
+
+            .btn-lanzar:hover {
+                background-color: #8b1a1a;
+            }
+
+        .btn-nuevo {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            background-color: #555;
+        }
+
+            .btn-nuevo:hover {
+                background-color: #333;
+            }
+
+        .btn-lanzar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .mensaje {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-height: 24px;
+            color: firebrick;
+        }
+
+        .label-suma,
+        .label-punto {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .suma,
+        .punto {
+            color: #333;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .historial {
+            margin-top: 20px;
+            border-top: 2px solid gainsboro;
+        }
+
+            .historial h3 {
+                color: firebrick;
+            }
+
+            .historial ul {
+                max-height: 150px;
+                overflow-y: auto;
+                color: #555;
+                padding-left: 20px;
+                margin: 0;
+            }
+    </style>
+</head>
+
+<body>
+    <h1>Ejercicio 3. Juego de craps.</h1>
+    <div class="juego">
+        <header>
+            <button class="btn-nuevo">Nuevo juego</button>
+            <p class="between">(Lanza los dados y prueba tu suerte)</p>
+        </header>
+        <div class="dados">
+            <div class="dado">⚀</div>
+            <div class="dado">⚀</div>
+        </div>
+        <div class="controles">
+            <div class="left">
+                <button class="btn-lanzar">Lanzar dados</button>
+            </div>
+            <div class="right">
+                <p class="mensaje">Presiona "Lanzar dados" para comenzar.</p>
+                <p class="label-suma">Suma: <span class="suma">-</span></p>
+                <p class="label-punto">Punto: <span class="punto">-</span></p>
+            </div>
+        </div>
+        <div class="historial">
+            <h3>Historial de tiradas</h3>
+            <ul></ul>
+        </div>
+    </div>
+    <script type="module">
+                const btnNuevo = document.querySelector(".btn-nuevo");
+                const btnLanzar = document.querySelector(".btn-lanzar");
+                const dados = document.querySelectorAll(".dado");
+                const mensaje = document.querySelector(".mensaje");
+                const labelSuma = document.querySelector(".suma");
+                const labelPunto = document.querySelector(".punto");
+                const historial = document.querySelector(".historial ul");
+
+                const caras = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+                let punto = 0;
+                let tirada = 0;
+
+                const tirarDado = () => {
+                    return Math.floor(Math.random() * 6) + 1;
+                };
+
+                const iniciarJuego = () => {
+                    punto = 0;
+                    tirada = 0;
+                    dados.forEach((dado) => {
+                        dado.textContent = "⚀";
+                        dado.style.backgroundColor = "gainsboro";
+                        dado.style.color = "firebrick";
+                    });
+                    labelSuma.textContent = "-";
+                    labelPunto.textContent = "-";
+                    mensaje.textContent = 'Presiona "Lanzar dados" para comenzar.';
+                    historial.innerHTML = "";
+                    btnLanzar.disabled = false;
+                };
+
+                const terminarJuego = (texto, gano) => {
+                    mensaje.textContent = texto;
+                    punto = 0;
+                    btnLanzar.disabled = true;
+                    dados.forEach((dado) => {
+                        dado.style.backgroundColor = gano ? "firebrick" : "#555";
+                        dado.style.color = "white";
+                    });
+                };
+
+                const lanzarDados = () => {
+                    const dado1 = tirarDado();
+                    const dado2 = tirarDado();
+                    const suma = dado1 + dado2;
+                    tirada++;
+
+                    dados[0].textContent = caras[dado1 - 1];
+                    dados[1].textContent = caras[dado2 - 1];
+                    labelSuma.textContent = suma;
+
+                    if (punto === 0) {
+                        if (suma === 7 || suma === 11) {
+                            terminarJuego("¡Ganaste!", true);
+                        } else if (suma === 2 || suma === 3 || suma === 12) {
+                            terminarJuego("Perdiste. ¡Craps!", false);
+                        } else {
+                            punto = suma;
+                            labelPunto.textContent = punto;
+                            mensaje.textContent = "Se estableció el punto. ¡Sigue lanzando!";
+                        }
+                    } else if (suma === punto) {
+                        terminarJuego("¡Ganaste! Salió el punto", true);
+                    } else if (suma === 7) {
+                        terminarJuego("Perdiste. Salió 7", false);
+                    } else {
+                        mensaje.textContent = "Sigue intentando. El punto es " + punto;
+                    }
+
+                    const elemento = document.createElement("li");
+                    elemento.textContent = `Tirada ${tirada}: ${dado1} + ${dado2} = ${suma}`;
+                    historial.prepend(elemento);
+                };
+
+                btnLanzar.addEventListener("click", lanzarDados);
+                btnNuevo.addEventListener("click", iniciarJuego);
+
+                iniciarJuego();
+    </script>
+</body>
+</html>

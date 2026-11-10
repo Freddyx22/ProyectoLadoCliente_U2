@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Proyecto 1. Cajero Automático</title>
+    <style>
+        :root {
+            --oscuro: #13315c;
+            --medio: #3d6a9e;
+            --suave: #c9d8ea;
+            --fondo: #f0f4f9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--fondo);
+            color: var(--oscuro);
+        }
+
+        header {
+            background: var(--oscuro);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+            header h1 {
+                margin: 0 0 5px;
+                font-size: 1.6rem;
+            }
+
+            header p {
+                margin: 0;
+                color: var(--suave);
+            }
+
+        main {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 16px;
+        }
+
+        section {
+            background: white;
+            border: 1px solid var(--suave);
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--suave);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medio);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--oscuro);
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            background: var(--oscuro);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: var(--medio);
+            }
+
+        form button[type=submit] {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .saldo {
+            font-size: 1.3rem;
+        }
+
+        .botones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+            .botones button {
+                flex: 1;
+            }
+
+        details {
+            margin-top: 20px;
+        }
+
+        summary {
+            padding: 10px;
+            background: var(--fondo);
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0;
+        }
+
+        li {
+            background: var(--fondo);
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        footer {
+            padding: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--medio);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Proyecto 1: Cajero Automático</h1>
+        <p>Programación del lado del cliente</p>
+    </header>
+
+    <main>
+        <section id="pantallaLogin">
+            <h2>Iniciar sesión</h2>
+            <form>
+                <label for="pin">Ingresa tu PIN</label>
+                <input type="password" id="pin" name="pin" autocomplete="off" />
+                <button type="submit">Ingresar</button>
+            </form>
+        </section>
+
+        <section id="pantallaCajero" class="oculto">
+            <h2>Cajero Automático</h2>
+            <form>
+                <p class="saldo">Saldo disponible: <output name="saldo">$1000</output></p>
+                <label for="cantidad">Cantidad</label>
+                <input type="number" id="cantidad" name="cantidad" placeholder="0" />
+                <div class="botones">
+                    <button type="button" name="btnRetirar">Retirar</button>
+                    <button type="button" name="btnDepositar">Depositar</button>
+                </div>
+            </form>
+            <details>
+                <summary>Ver historial</summary>
+                <ul></ul>
+            </details>
+        </section>
+    </main>
+
+    <footer>
+        <p>Proyecto 1 · Unidad 2</p>
+    </footer>
+
+    <script type="module">
+                const pantallas = document.querySelectorAll("main > section");
+                const formLogin = document.forms[0];
+                const formCajero = document.forms[1];
+                const ulHistorial = document.querySelectorAll("ul")[0];
+
+                const guardado = localStorage.getItem("cajero");
+                const cajero = guardado ? JSON.parse(guardado) : { saldo: 1000, historial: [] };
+
+                const mostrar = (id = "") => {
+                    pantallas.forEach((p) => {
+                        p.classList.toggle("oculto", p.id !== id);
+                    });
+                };
+
+                const mostrarCajero = () => {
+                    formCajero.saldo.textContent = "$" + cajero.saldo;
+                    ulHistorial.innerHTML = "";
+                    for (const h of cajero.historial) {
+                        const li = document.createElement("li");
+                        li.textContent = h.fecha + " - " + h.tipo + ": $" + h.monto;
+                        ulHistorial.append(li);
+                    }
+                };
+
+                const registrar = (tipo = "", monto = 0) => {
+                    cajero.historial.unshift({
+                        tipo: tipo,
+                        monto: monto,
+                        fecha: new Date().toLocaleString("es-MX")
+                    });
+                    if (cajero.historial.length > 5) {
+                        cajero.historial.pop();
+                    }
+                    localStorage.setItem("cajero", JSON.stringify(cajero));
+                    formCajero.cantidad.value = "";
+                    mostrarCajero();
+                };
+
+                formLogin.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    if (formLogin.pin.value === "1234") {
+                        formLogin.pin.value = "";
+                        mostrar("pantallaCajero");
+                    } else {
+                        alert("PIN incorrecto.");
+                    }
+                });
+
+                formCajero.btnRetirar.addEventListener("click", () => {
+                    const monto = Number(formCajero.cantidad.value);
+                    if (monto <= 0) {
+                        alert("Ingresa una cantidad válida.");
+                    } else if (monto > cajero.saldo) {
+                        alert("Fondos insuficientes.");
+                    } else {
+                        cajero.saldo -= monto;
+                        registrar("Retiro", monto);
+                    }
+                });
+
+                formCajero.btnDepositar.addEventListener("click", () => {
+                    const monto = Number(formCajero.cantidad.value);
+                    if (monto <= 0) {
+                        alert("Ingresa una cantidad válida.");
+                    } else {
+                        cajero.saldo += monto;
+                        registrar("Depósito", monto);
+                    }
+                });
+
+                mostrarCajero();
+                mostrar("pantallaLogin");
+    </script>
+</body>
+</html>
